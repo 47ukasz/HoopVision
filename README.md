@@ -1,30 +1,56 @@
-# HoopVision
+# 🏀 HoopVision
 
-Celem tego projektu jest stworzenie aplikacji która pozwoli zawodnikom na analizę oddanych przez siebie rzutów.
-Za pomocą kamery, ustawionej tak aby obejmowała zarówno zawodnika oraz kosz, system będzie przechwytywał piłkę oraz obręcz, a następnie wykrywał moment kiedy piłka przelatuje przez obręcz.
-Na tej podstawie będzie obliczał procent celności z oddanych rzutów.
+Celem tego projektu jest stworzenie aplikacji, która pozwoli zawodnikom na **analizę oddanych przez siebie rzutów**.  
+Za pomocą kamery ustawionej tak, aby obejmowała zarówno zawodnika, jak i kosz, system będzie **śledził piłkę i obręcz**, a następnie **wykrywał moment, w którym piłka przelatuje przez obręcz**.  
+Na tej podstawie aplikacja obliczy **procent celności z oddanych rzutów**.
 
-💡 Zasada:
-	•	Nigdy nie commitujemy bezpośrednio do main!
-	•	Każda funkcja, poprawka lub eksperyment ma swój osobny branch.
+---
 
-🔹 Branch per feature / fix
-Każdy branch powinien opisywać konkretny cel – funkcję, zadanie lub poprawkę.
-Nazwy piszemy małymi literami, używając myślników (-) jako separatorów.
+## 🌿 Zasady pracy z Git
 
-🔹 Główne branche:
-    main - stabilna wersja MVP, tylko zatwierdzone release’y po code review
-    dev - aktywny rozwój i integracjamerge tylko po przeglądzie kodu, zawiera najnowsze zmiany z zespołu
-	•	Nigdy nie commitujemy bezpośrednio do main!
-	•	Każda funkcja, poprawka lub eksperyment ma swój osobny branch.
+💡 **Zasada:**
+- Nigdy nie commitujemy bezpośrednio do `main`!
+- Każda funkcja, poprawka lub eksperyment ma **swój osobny branch**.
 
-📋 Typy branchy:
-    /feature - nowa funkcja/modul
-    /fix - poprawka błędów
-    /refactor - poprawki bez zmiany funkcjonalnosci(clean code)
-    /test - testy
+---
 
-Każdy commit powinien być mały, czytelny i opisowy.
+## 🔹 Branch per feature / fix
+
+Każdy branch powinien opisywać **konkretny cel** – funkcję, zadanie lub poprawkę.  
+Nazwy piszemy **małymi literami**, używając **myślników (`-`)** jako separatorów.
+
+---
+
+## 🔹 Główne branche
+
+| Branch | Przeznaczenie | Zasady |
+|--------|----------------|--------|
+| **`main`** | Stabilna wersja MVP | Tylko zatwierdzone release’y po code review |
+| **`dev`** | Aktywny rozwój i integracja | Merge tylko po przeglądzie kodu |
+
+💡 **Nigdy nie commitujemy bezpośrednio do `main`!**  
+Każda funkcja, poprawka lub eksperyment ma swój osobny branch.
+
+---
+
+## 📋 Typy branchy
+
+| Typ | Zastosowanie | Przykład |
+|------|---------------|----------|
+| `feature` | Nowa funkcja / moduł | `feature/ball-tracker` |
+| `fix` | Poprawka błędu | `fix/tracker-stability` |
+| `refactor` | Porządki w kodzie (bez zmiany funkcjonalności) | `refactor/overlay-cleanup` |
+| `test` | Testy i eksperymenty | `test/kalman-filter` |
+
+---
+
+## 🧩 Zasady commitów
+
+Każdy commit powinien być:
+- **mały** (dotyczyć jednej zmiany),
+- **czytelny**,
+- **opisowy**.
+
 
 ## 📁 Struktura projektu
 
