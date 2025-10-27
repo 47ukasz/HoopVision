@@ -17,7 +17,7 @@ Nazwy piszemy małymi literami, używając myślników (-) jako separatorów.
     dev - aktywny rozwój i integracjamerge tylko po przeglądzie kodu, zawiera najnowsze zmiany z zespołu
 	•	Nigdy nie commitujemy bezpośrednio do main!
 	•	Każda funkcja, poprawka lub eksperyment ma swój osobny branch.
-    
+
 📋 Typy branchy:
     /feature - nowa funkcja/modul
     /fix - poprawka błędów
@@ -28,11 +28,13 @@ Każdy commit powinien być mały, czytelny i opisowy.
 
 Struktura projektu
 hoopvision/
-├── models/hoopvision.pt
+├── models/
+│   └── hoopvision.pt          # wytrenowany model YOLOv8
 ├── src/
-│   ├── detector.py
-│   ├── tracker.py
-│   ├── logic.py
-│   ├── overlay.py
-│   └── main.py
-└── data/results.csv
+│   ├── detector.py            # moduł detekcji obiektów (piłka, kosz)
+│   ├── tracker.py             # śledzenie piłki i analiza trajektorii
+│   ├── logic.py               # logika wykrywania trafień
+│   ├── overlay.py             # nakładka graficzna na podgląd kamery
+│   └── main.py                # punkt wejścia MVP
+└── data/
+└── results.csv            # zapis wyników i trafień
