@@ -26,7 +26,9 @@ Nazwy piszemy małymi literami, używając myślników (-) jako separatorów.
 
 Każdy commit powinien być mały, czytelny i opisowy.
 
-Struktura projektu
+## 📁 Struktura projektu
+
+```bash
 hoopvision/
 ├── models/
 │   └── hoopvision.pt          # wytrenowany model YOLOv8
@@ -37,4 +39,4 @@ hoopvision/
 │   ├── overlay.py             # nakładka graficzna na podgląd kamery
 │   └── main.py                # punkt wejścia MVP
 └── data/
-└── results.csv            # zapis wyników i trafień
+    └── results.csv            # zapis wyników i trafień
