@@ -1,0 +1,1 @@
+jak chcecie odpalac skrypty z tego folderka to musicie cwd -> current working directory, ustawić na "/" -> główny folder, wtedy będzie śmigać
