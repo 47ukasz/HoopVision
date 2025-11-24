@@ -24,18 +24,36 @@ def feature_extraction(trajectory, rim_box, fps):
     min_dist_idx = np.argmin(dists)
     min_dist = dists[min_dist_idx]
     
+    #czas aby pilka opadla poniezj punktu srodka obreczy
+    time_offset = 0.25
+    look_ahead_frames = int(fps * time_offset) #przeliczamy na klatki
+    check_idx = min(len(points) - 1, min_dist_idx + look_ahead_frames) #ustalamy index wspolrzednych pilki po offsetcie
+
+    #wspolrzedne pilki po pokonania srodka obreczy
+    after_min_dist_points = points[check_idx]
+    after_x, after_y = after_min_dist_points
+    
+    #warunek wysokosci(musi byc pod obrecza)
+    is_below_rim = after_y > r_ymax
+    
+    #warunek szerokosci
+    rim_width = r_xmax - r_xmin
+    margin = rim_width * 0.15
+    is_within_with = (r_xmin - margin) < after_x < (r_xmax + margin)
+    
+    #warunek czy pilka jest w "tunelu" obreczy po najblizszym spotakniu z centrum obreczy
+    is_in_tunel = is_below_rim and is_within_with
+    
+    #TODO calculate angle and velocity after time_offset
     #predkosc i kąt 
     check_idx = max(1, min_dist_idx - 5)
     vec = points[check_idx] - points[check_idx-1]
     velocity = np.linalg.norm(vec) # pix/klatkę
     angle = np.degrees(np.arctan2(vec[1], vec[0]))
     
-    #czy konczy pod obrecza
-    ends_below = points[-1][1] > r_ymax
-    
     return {
         "min_odleglosc_pix": round(min_dist, 2),
         "predkosc": round(velocity, 2),
         "kat": round(angle, 2),
-        "czy_pod_obrecza": ends_below,
+        "czy_w_tunelu_pod_obrecza": is_in_tunel,
     }
