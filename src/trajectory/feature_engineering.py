@@ -44,16 +44,7 @@ def feature_extraction(trajectory, rim_box, fps):
     #warunek czy pilka jest w "tunelu" obreczy po najblizszym spotakniu z centrum obreczy
     is_in_tunel = is_below_rim and is_within_with
     
-    #TODO calculate angle and velocity after time_offset
-    #predkosc i kąt 
-    check_idx = max(1, min_dist_idx - 5)
-    vec = points[check_idx] - points[check_idx-1]
-    velocity = np.linalg.norm(vec) # pix/klatkę
-    angle = np.degrees(np.arctan2(vec[1], vec[0]))
-    
     return {
         "min_odleglosc_pix": round(min_dist, 2),
-        "predkosc": round(velocity, 2),
-        "kat": round(angle, 2),
         "czy_w_tunelu_pod_obrecza": is_in_tunel,
     }

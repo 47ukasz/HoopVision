@@ -6,7 +6,7 @@ from ultralytics import YOLO
 
 project_dir = Path.cwd()
 model_path = project_dir / "models/hoopvision_v6/weights/best.pt"
-video_path = project_dir / "data/collection/videos/nietrafione/missed12.mp4"
+video_path = project_dir / "data/collection/videos/nietrafione/missed11.mp4"
 #missed11
 
 model = YOLO(model_path)
@@ -75,8 +75,6 @@ if detected_rim_box is not None and len(trajectory_points) > 5:
     wyniki = fe.feature_extraction(trajectory_points, detected_rim_box, fps)
     
     print(f"Minimalna odległość od centrum: {wyniki['min_odleglosc_pix']} px")
-    print(f"Prędkość: {wyniki['predkosc']} px/frame")
-    print(f"Kąt: {wyniki['kat']} stopni")
     print(f"Czy skończyło się pod obręczą?: {'TAK' if wyniki['czy_w_tunelu_pod_obrecza'] else 'NIE'}")
     
 else:
