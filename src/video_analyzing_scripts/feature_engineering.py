@@ -6,7 +6,7 @@ def feature_extraction(trajectory, rim_box, fps):
     trajectory: lista [(frame_idx, x, y), ...]
     rim_box: [x_min, y_min, x_max, y_max]
     """
-    if not trajectory:
+    if not trajectory or len(trajectory) <= 5:
         return None
     
     if rim_box is None: 
@@ -57,3 +57,14 @@ def feature_extraction(trajectory, rim_box, fps):
         "kat": round(angle, 2),
         "czy_w_tunelu_pod_obrecza": is_in_tunel,
     }
+
+def handle_display_features(trajectory_points, detected_rim_box, fps):
+    features = feature_extraction(trajectory_points, detected_rim_box, fps)
+
+    if features is not None:
+        print(f"Minimalna odległość od centrum: {features['min_odleglosc_pix']} px")
+        print(f"Prędkość: {features['predkosc']} px/frame")
+        print(f"Kąt: {features['kat']} stopni")
+        print(f"Czy skończyło się pod obręczą?: {'TAK' if features['czy_w_tunelu_pod_obrecza'] else 'NIE'}")
+    else:
+        print("Nie udało się zebrać wystarczających danych (brak obręczy lub krótka trajektoria).")

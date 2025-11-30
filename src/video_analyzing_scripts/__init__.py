@@ -1,0 +1,1 @@
+# oznaczenie dla pythona, że trajectory jest paczką
