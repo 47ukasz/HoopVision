@@ -212,6 +212,5 @@ def main():
 
     save_csv(all_results, OUTPUT_CSV)
 
-
 if __name__ == "__main__":
     main()

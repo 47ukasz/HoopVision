@@ -4,15 +4,6 @@ import numpy as np
 from constants import BASKETBALL_CLASS_INDEX, MIN_BALL_CONF
 
 def handle_detect_trajectory_point(currentFrameId, box):
-    box_class_index = int(box.cls[0])
-    box_conf_level = float(box.conf[0])
-
-    if box_class_index != BASKETBALL_CLASS_INDEX:
-        return None
-    
-    if box_conf_level < MIN_BALL_CONF:
-        return None
-    
     xyxy = box.xyxy[0].cpu().numpy()
 
     center_x = int((xyxy[0] + xyxy[2]) / 2)

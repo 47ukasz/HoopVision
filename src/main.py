@@ -1,16 +1,20 @@
 from pathlib import Path
+import pandas as pd
+import joblib
 import cv2 as cv
 from ultralytics import YOLO
-from video_analyzing_scripts.feature_engineering import handle_display_features
+from video_analyzing_scripts.feature_engineering import handle_display_features, feature_extraction
 from video_analyzing_scripts.rim import handle_detect_net_moved, handle_detetect_rim, handle_draw_net_moved
 from video_analyzing_scripts.trajectory import handle_detect_trajectory_point, handle_draw_trajectory
 from video_analyzing_scripts.throw_roi import create_tracking_roi, is_ball_in_roi
 from constants import RIM_CLASS_INDEX, MIN_RIM_CONF, BASKETBALL_CLASS_INDEX, MIN_BALL_CONF
 project_dir = Path.cwd()
 model_path = project_dir / "models/hoopvision_v6/weights/best.pt"
-video_path = project_dir / "data/collection/videos/long/video12.mp4"
+knn_model_path = project_dir / "models/knn_model.pkl"
+video_path = project_dir / "data/collection/trafione/scored1.mp4"
 
 model = YOLO(model_path)
+knn_model = joblib.load(knn_model_path)
 
 basketball_class_index = 0
 rim_class_index = 0
@@ -23,6 +27,7 @@ detected_rim_box = None #[xmin, ymin, xmax, ymax]
 rim_locked = False
 frame_count = 0
 prev_frame = None
+point = None
 
 ## zmienne do logiki rzutow
 shot_cooldown = 0            #licznik przerwy miedzy rzutami
@@ -73,17 +78,17 @@ while cap.isOpened():
         # 1. RIM
         if cls_id == RIM_CLASS_INDEX and conf >= MIN_RIM_CONF:
             detected_rim_box = handle_detetect_rim(frame, box)
-            # Ustaweienie ROI
+            # Ustawienie ROI
             tracking_roi = create_tracking_roi(detected_rim_box, frame.shape)
             
             # detekcja ruchu siatki 
-            if prev_frame is not None:
-                net_attr = handle_detect_net_moved(frame, prev_frame, box)
+            net_attr = handle_detect_net_moved(frame, prev_frame, box)
                 
-                if is_tracking_shot and net_attr is not None:
-                    is_moving, _ = net_attr
-                    if is_moving:
-                        shot_net_moved = True
+            if is_tracking_shot and net_attr is not None:
+                is_moving, _ = net_attr
+                
+                if is_moving:
+                    shot_net_moved = True
 
         # 2. BASKETBALL
         elif cls_id == BASKETBALL_CLASS_INDEX and conf >= MIN_BALL_CONF:
@@ -100,20 +105,18 @@ while cap.isOpened():
                         is_tracking_shot = True
                         trajectory_points = [] # reset dla nowego rzutu
                     trajectory_points.append(point)
-                
                 else:
-                    # Sprwadzenie czy pilka poza strefa -> koniec rzutu
+                    # Sprawdzenie czy pilka poza strefa -> koniec rzutu
                     if is_tracking_shot:
                         total_shots += 1
                         print(f"Rzut nr {total_shots} zakończony. Analiza...")
                         
-                        #TODO wyciagnac cechy poprzez feature_extraction
-                        #czy siatka sie ruszyla podczas rzutu jest okreslone w "shot_net_moved"
-                        #usunac linie poznizej z "handle_display_features"
+                        features = feature_extraction(trajectory_points, detected_rim_box, fps)
+                        features["net_moved"] = shot_net_moved
                         
-                        #wyswietlenie cech rzutu
-                        handle_display_features(trajectory_points, detected_rim_box, fps)
-                        print(f"Ruch siatki: {shot_net_moved}")
+                        features_df = pd.DataFrame([features])
+                        prediction = knn_model.predict(features_df)
+                        print("Czy trafiono?:", 'TAK' if prediction[0] else 'Nie')  # 0 – pudło, 1 – trafiony
                         # Reset
                         is_tracking_shot = False
                         shot_net_moved = False
