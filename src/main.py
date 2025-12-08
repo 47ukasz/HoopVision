@@ -29,7 +29,7 @@ def analyze_video(video_path: Path):
     frame_count = 0
     prev_frame = None
 
-    total_inference_time = 0.0
+    total_model_time = 0.0
     total_detect_rim_time = 0.0
     total_data_collect_time = 0.0
     total_draw_trajectory_time = 0.0
@@ -47,7 +47,7 @@ def analyze_video(video_path: Path):
         inf_start = time.perf_counter()
         results = model(frame)
         inf_end = time.perf_counter()
-        total_inference_time += inf_end - inf_start
+        total_model_time += inf_end - inf_start
 
         boxes = results[0].boxes
 
@@ -98,11 +98,11 @@ def analyze_video(video_path: Path):
         return (total / frame_count) if frame_count else 0.0
 
     sum_measured = (
-        total_inference_time
-        + total_detect_rim_time
-        + total_data_collect_time
-        + total_draw_trajectory_time
-        + total_display_time
+            total_model_time
+            + total_detect_rim_time
+            + total_data_collect_time
+            + total_draw_trajectory_time
+            + total_display_time
     )
 
     residual_time = total_video_time - sum_measured
@@ -117,8 +117,8 @@ def analyze_video(video_path: Path):
         "total_video_time": total_video_time,
         "avg_time_per_frame": avg(total_video_time),
 
-        "total_inference_time": total_inference_time,
-        "avg_inference_per_frame": avg(total_inference_time),
+        "total_model_time": total_model_time,
+        "avg_model_per_frame": avg(total_model_time),
 
         "total_detect_rim_time": total_detect_rim_time,
         "avg_detect_rim_per_frame": avg(total_detect_rim_time),
@@ -155,8 +155,8 @@ with open(csv_output, "a", newline="", encoding="utf-8") as csvfile:
             "frame_count",
             "total_video_time",
             "avg_time_per_frame",
-            "total_inference_time",
-            "avg_inference_per_frame",
+            "total_model_time",
+            "avg_model_per_frame",
             "total_detect_rim_time",
             "avg_detect_rim_per_frame",
             "total_data_collect_time",
@@ -181,8 +181,8 @@ with open(csv_output, "a", newline="", encoding="utf-8") as csvfile:
             stats["frames"],
             stats["total_video_time"],
             stats["avg_time_per_frame"],
-            stats["total_inference_time"],
-            stats["avg_inference_per_frame"],
+            stats["total_model_time"],
+            stats["avg_model_per_frame"],
             stats["total_detect_rim_time"],
             stats["avg_detect_rim_per_frame"],
             stats["total_data_collect_time"],
