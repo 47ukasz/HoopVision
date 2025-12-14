@@ -62,7 +62,7 @@ def handle_detect_net_moved(currentFrame, prevFrame, box):
 def handle_draw_net_moved(currentFrame, rim_moved, cords):
     x1, y1, x2, y2 = cords
 
-    label = f"{"Nie" if not rim_moved else ""} porusza sie"
+    label = f'{"Nie" if not rim_moved else ""} porusza sie'
     label_color = (255, 0, 0) if not rim_moved else (0, 255, 0)
     cv.putText(currentFrame, label, (x1, y1 - 20), cv.FONT_HERSHEY_SIMPLEX, 1, label_color, 2)
     
