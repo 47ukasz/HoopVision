@@ -2,26 +2,12 @@ import cv2 as cv
 import numpy as np
 from constants import RIM_CLASS_INDEX, MIN_RIM_CONF
 
-def handle_detetect_rim(currentFrame, box):
-    xyxy = box.xyxy[0].cpu().numpy()
-
-    rx1, ry1, rx2, ry2 = map(int, xyxy)
+def handle_detect_rim(rim_candidates):
+    if not rim_candidates:
+        return None
     
-    cv.rectangle(currentFrame, (rx1, ry1), (rx2, ry2), (0, 0, 255), 2)
-        
-    target_x = int((rx1 + rx2) / 2)
-    target_y = int((ry1 + ry2) / 2) 
-    
-    cv.circle(currentFrame, (target_x, target_y), 3, (0, 255, 255), -1)   
-    
-    #krawedzie tunelu
-    rim_width = rx2 - rx1
-    margin = int(rim_width * 0.15) 
-    
-    cv.line(currentFrame, (rx1 - margin, ry2 - margin), (rx1, ry2 + 200), (0, 255, 0), 2)
-    cv.line(currentFrame, (rx2 + margin, ry2 + margin), (rx2, ry2 + 200), (0, 255, 0), 2)
-
-    return xyxy
+    rim_xyxy, rim_box = max(rim_candidates, key=lambda t: handle_calculate_rim_area(t[0]))
+    return rim_xyxy, rim_box
 
 def handle_detect_net_moved(currentFrame, prevFrame, box):
     box_class_index = int(box.cls[0])
@@ -69,3 +55,37 @@ def handle_draw_net_moved(currentFrame, rim_moved, cords):
     rim_color = (255, 0, 0) if not rim_moved else (0, 255, 0)
 
     cv.rectangle(currentFrame, (x1, y1), (x2, y2), rim_color, 2)
+
+def handle_draw_rim(currentFrame, rim_xyxy):
+    
+    if rim_xyxy is None:
+        return None
+
+    x1, y1, x2, y2 = map(int, rim_xyxy)
+
+    # box kosza
+    cv.rectangle(currentFrame, (x1, y1), (x2, y2), (0, 0, 255), 2)
+
+    # środek kosza
+    target_x = int((x1 + x2) / 2)
+    target_y = int((y1 + y2) / 2)
+    cv.circle(currentFrame, (target_x, target_y), 3, (0, 255, 255), -1)
+
+    # "tunel" / krawędzie
+    rim_width = x2 - x1
+    margin = int(rim_width * 0.15)
+
+    cv.line(currentFrame, (x1 - margin, y2 - margin), (x1, y2 + 200), (0, 255, 0), 2)
+    cv.line(currentFrame, (x2 + margin, y2 + margin), (x2, y2 + 200), (0, 255, 0), 2)
+
+# def handle_calculate_rim_area(box):
+#     xywh = box.xywh[0].cpu().numpy()
+
+#     _, _, w, h = xywh
+
+#     return w * h
+
+def handle_calculate_rim_area(b_xyxy):
+    x1, y1, x2, y2 = map(float, b_xyxy)
+
+    return max(0.0, x2 - x1) * max(0.0, y2 - y1)
