@@ -3,8 +3,8 @@ from datetime import datetime
 from pathlib import Path
 
 project_dir = Path.cwd()
-model_path = project_dir / "models/hoopvision_v1/weights/best.pt"
-asset_path = project_dir / "data/collection/videos/video1.mp4"
+model_path = project_dir / "models/hoopvision_v3/weights/best.pt"
+asset_path = project_dir / "data/collection/videos/train/video2.mp4"
 
 timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
 unique_name = f"{asset_path.stem}_{timestamp}"

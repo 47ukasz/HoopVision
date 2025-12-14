@@ -1,0 +1,1 @@
+# oznaczenie dla pythona, że ten folder jest paczką
