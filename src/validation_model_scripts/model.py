@@ -8,6 +8,7 @@ from sklearn.neighbors import KNeighborsClassifier
 from sklearn.pipeline import Pipeline
 from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
 from sklearn.tree import DecisionTreeClassifier
+from sklearn.linear_model import LogisticRegression
 
 project_dir = Path.cwd()
 csv_dir = project_dir / "data/trajectory_features.csv"
@@ -65,5 +66,22 @@ def train_dt():
     print(classification_report(y_test, y_pred))
 
     joblib.dump(dt_pipeline, "dt_model.pkl")
+    
+def train_lt():
+    lt_pipeline = Pipeline([
+        ("tl", LogisticRegression(random_state=42))
+    ])
+
+    lt_pipeline.fit(X_train, y_train)
+
+    y_pred = lt_pipeline.predict(X_test)
+
+    print("Dokładność (accuracy):", accuracy_score(y_test, y_pred))
+    print("Macierz pomyłek:")
+    print(confusion_matrix(y_test, y_pred))
+    print("Raport klasyfikacji:")
+    print(classification_report(y_test, y_pred))
+
+    joblib.dump(lt_pipeline, "lt_model.pkl")
     
 train_knn()

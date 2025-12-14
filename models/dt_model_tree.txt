@@ -1,0 +1,19 @@
+|--- min_odleglosc_pix <= 46.73
+|   |--- czy_w_tunelu_pod_obrecza <= 0.50
+|   |   |--- min_odleglosc_pix <= 34.11
+|   |   |   |--- class: hit
+|   |   |--- min_odleglosc_pix >  34.11
+|   |   |   |--- class: miss
+|   |--- czy_w_tunelu_pod_obrecza >  0.50
+|   |   |--- min_odleglosc_pix <= 13.99
+|   |   |   |--- class: miss
+|   |   |--- min_odleglosc_pix >  13.99
+|   |   |   |--- min_odleglosc_pix <= 23.26
+|   |   |   |   |--- class: hit
+|   |   |   |--- min_odleglosc_pix >  23.26
+|   |   |   |   |--- min_odleglosc_pix <= 25.65
+|   |   |   |   |   |--- class: miss
+|   |   |   |   |--- min_odleglosc_pix >  25.65
+|   |   |   |   |   |--- class: hit
+|--- min_odleglosc_pix >  46.73
+|   |--- class: miss
