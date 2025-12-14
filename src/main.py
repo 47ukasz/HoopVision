@@ -9,9 +9,9 @@ from video_analyzing_scripts.trajectory import handle_detect_trajectory_point, h
 from video_analyzing_scripts.throw_roi import create_tracking_roi, is_ball_in_roi
 from constants import RIM_CLASS_INDEX, MIN_RIM_CONF, BASKETBALL_CLASS_INDEX, MIN_BALL_CONF
 project_dir = Path.cwd()
-model_path = project_dir / "models/hoopvision_v6/weights/best.pt"
+model_path = project_dir / "models/hoopvision_v7/weights/best.pt"
 knn_model_path = project_dir / "models/knn_model.pkl"
-video_path = project_dir / "data/collection/videos/test/video9.mp4"
+video_path = project_dir / "data/collection/videos/long/video12.mp4"
 output_path = project_dir / "analysis_results" / f"{video_path.stem}_analyzed.mp4"
 
 model = YOLO(model_path)

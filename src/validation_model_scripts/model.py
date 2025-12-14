@@ -15,7 +15,7 @@ csv_dir = project_dir / "data/trajectory_features.csv"
 df = pd.read_csv(csv_dir)
 
 ##feature_cols = ["min_odleglosc_pix", "predkosc", "kat", "czy_w_tunelu_pod_obrecza", "net_moved"]
-feature_cols = ["min_odleglosc_pix", "czy_w_tunelu_pod_obrecza", "net_moved"]
+feature_cols = ["min_odleglosc_pix", "czy_w_tunelu_pod_obrecza"]
 
 X = df[feature_cols]
 y = df["label"]
@@ -66,4 +66,4 @@ def train_dt():
 
     joblib.dump(dt_pipeline, "dt_model.pkl")
     
-train_dt()
+train_knn()
