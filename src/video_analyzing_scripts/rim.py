@@ -9,41 +9,66 @@ def handle_detect_rim(rim_candidates):
     rim_xyxy, rim_box = max(rim_candidates, key=lambda t: handle_calculate_rim_area(t[0]))
     return rim_xyxy, rim_box
 
+
 def handle_detect_net_moved(currentFrame, prevFrame, box):
     box_class_index = int(box.cls[0])
     box_conf_level = float(box.conf[0])
 
-    margin = 10
-    min_rim_motion = 1.0
-
     if box_class_index != RIM_CLASS_INDEX:
-        return
-    
+        return None
+
     if box_conf_level < MIN_RIM_CONF:
-        return
+        return None
 
     if currentFrame is None or prevFrame is None:
-        return
+        return None
 
     curr_gray = cv.cvtColor(currentFrame, cv.COLOR_BGR2GRAY)
     prev_gray = cv.cvtColor(prevFrame, cv.COLOR_BGR2GRAY)
 
-    cords = [int(cord) + margin for cord in box.xyxy[0]]
-    x1, y1, x2, y2 = cords
+    margin = 10
+    h, w = curr_gray.shape
+
+    x1, y1, x2, y2 = map(int, box.xyxy[0])
+    x1 = max(0, x1 - margin)
+    y1 = max(0, y1 - margin)
+    x2 = min(w, x2 + margin)
+    y2 = min(h, y2 + margin)
+
+    if x2 <= x1 or y2 <= y1:
+        return None
 
     curr_area = curr_gray[y1:y2, x1:x2]
     prev_area = prev_gray[y1:y2, x1:x2]
 
-    if prev_area.size <= 0 and curr_area.size <= 0:
-        return
-    
-    flow = cv.calcOpticalFlowFarneback(prev_area, curr_area, None, pyr_scale = 0.5, levels = 5, winsize = 11, iterations = 5, poly_n = 7, poly_sigma = 1.1, flags = 0)
-    mag, _ = cv.cartToPolar(flow[:,:,0], flow[:,:,1])
+    if curr_area.size == 0 or prev_area.size == 0:
+        return None
 
-    rim_motion_value = np.mean(mag)
+    curr_area = cv.GaussianBlur(curr_area, (5, 5), 0)
+    prev_area = cv.GaussianBlur(prev_area, (5, 5), 0)
+
+    flow = cv.calcOpticalFlowFarneback(
+        prev_area,
+        curr_area,
+        None,
+        pyr_scale=0.5,
+        levels=3,
+        winsize=15,
+        iterations=3,
+        poly_n=5,
+        poly_sigma=1.1,
+        flags=0
+    )
+
+    mag, _ = cv.cartToPolar(flow[..., 0], flow[..., 1])
+
+    rim_motion_value = np.percentile(mag, 88)
+
+    min_rim_motion = 0.7
     rim_moving = rim_motion_value > min_rim_motion
 
-    return (rim_moving, cords)
+    return rim_moving, [x1, y1, x2, y2]
+
 
 def handle_draw_net_moved(currentFrame, rim_moved, cords):
     x1, y1, x2, y2 = cords
