@@ -10,12 +10,12 @@ from video_analyzing_scripts.throw_roi import create_tracking_roi, is_ball_in_ro
 from constants import RIM_CLASS_INDEX, MIN_RIM_CONF, BASKETBALL_CLASS_INDEX, MIN_BALL_CONF
 project_dir = Path.cwd()
 model_path = project_dir / "models/hoopvision_v7/weights/best.pt"
-knn_model_path = project_dir / "models/knn_model.pkl"
+lr_model_path = project_dir / "models/lr_model.pkl"
 video_path = project_dir / "data/collection/videos/long/video12.mp4"
 output_path = project_dir / "analysis_results" / f"{video_path.stem}_analyzed.mp4"
 
 model = YOLO(model_path)
-knn_model = joblib.load(knn_model_path)
+lr_model = joblib.load(lr_model_path)
 
 basketball_class_index = 0
 rim_class_index = 0
@@ -138,11 +138,20 @@ while cap.isOpened():
                 print(f"Rzut nr {total_shots} zakończony. Analiza...")
 
                 features = feature_extraction(trajectory_points, detected_rim_box, fps)
-                features["net_moved"] = shot_net_moved
-
+                #features["net_moved"] = shot_net_moved
                 features_df = pd.DataFrame([features])
-                prediction = knn_model.predict(features_df)
-                print("Czy trafiono?:", 'TAK' if prediction[0] else 'Nie')
+                model_input = features_df[["min_odleglosc_pix", "czy_w_tunelu_pod_obrecza"]]
+
+                prediction = lr_model.predict(model_input)[0]
+                if prediction == 'hit':
+                    result_text = "TRAFIONY!"
+                    color = (0, 255, 0) 
+                else:
+                    result_text = "PUDŁO"
+                    color = (0, 0, 255) 
+
+                print(f"Wynik LR: {result_text}")
+                print(f"Dane wejściowe: Dystans={features['min_odleglosc_pix']} | Tunel={features['czy_w_tunelu_pod_obrecza']}")
 
                 # Reset
                 is_tracking_shot = False
