@@ -57,7 +57,6 @@ def handle_detect_net_moved(currentFrame, prevFrame, rim_box, b_xyxy = None, bal
     if distance > 15 and distance <= 35:
         DEFAULT_MIN_RIM_MOTION = 0.35
 
-
     print(f"Obliczony dystans: {distance}")
     print(f"Rim motion value: {rim_motion_value}")
 

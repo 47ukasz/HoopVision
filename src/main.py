@@ -13,9 +13,9 @@ from constants import RIM_CLASS_INDEX, MIN_RIM_CONF, BASKETBALL_CLASS_INDEX, MIN
 project_dir = Path.cwd()
 model_path = project_dir / "models/hoopvision_v7/weights/best.pt"
 lr_model_path = project_dir / "models/lr_model.pkl"
-# video_path = project_dir / "data/collection/trafione/scored2.mp4"
+# video_path = project_dir / "data/collection/trafione/scored1.mp4"
 # video_path = project_dir / "data/collection/odbite_od_tablicy/backhit27.mp4"
-video_path = project_dir / "data/collection/nietrafione/missed19.mp4"
+video_path = project_dir / "data/collection/nietrafione/missed2.mp4"
 # video_path = project_dir / "data/collection/videos/test/video9.mp4"
 output_path = project_dir / "analysis_results" / f"{video_path.stem}_analyzed.mp4"
 
@@ -61,6 +61,7 @@ NET_MOVED_DETECTION_DURATION = int(fps * 0.2) # około 200ms
 net_moved_in_frames = [] # tablica która będzie przechowywała bool'a czy dla danych klatek zaobserwowano ruch siatki
 net_detection_started = False
 ball_center_points_in_rim = [] # tablica potrzebna do obliczenia najmniejszej odległości od środa obręczy, na tej podstawie będzie obliczany wspólczynnik ruchu siatki
+ball_center_points_after_rim = []
 wait_net_start = False
 
 # zmienne do detekcji kosza oraz wybrania prawidłowego
@@ -146,7 +147,7 @@ while cap.isOpened():
         bx1, by1, bx2, by2 = last_ball_xyxy
         cx = (bx1 + bx2) * 0.5
         cy = (by1 + by2) * 0.5
-        ball_center_points_in_rim.append((frame_count, cx, cy))
+        ball_center_points_in_rim.append(last_point)
 
     # zmienne do okreslenia czy pilka byla w siatce i ja opuscila
     left_rim_event = ball_in_rim_prev is True and ball_in_rim_now is False
@@ -182,11 +183,47 @@ while cap.isOpened():
             # standardowo, gdy pileczka jest w roi dodajemy punkt do trajektorii
             if last_point is not None:
                 trajectory_points.append(last_point)
+        else:
+            # pileczka nigdy nie przeleciala przez siatke, wiec rozpoczynamy predykcje 
+            total_shots += 1
+            print(f"Rzut nr {total_shots} zakończony. Analiza...")
+
+            features = feature_extraction(trajectory_points, detected_rim_box, fps, ball_center_points_after_rim=[])
+            features["net_moved"] = False
+
+            features_df = pd.DataFrame([features])
+            model_input = features_df[["min_odleglosc_pix", "czy_w_tunelu_pod_obrecza"]]
+            prediction = lr_model.predict(model_input)[0]
+
+            if prediction == 'hit':
+                result_text = "TRAFIONY!"
+            else:
+                result_text = "PUDŁO"
+
+            print(f"Wynik LR: {result_text}")
+            print(f"Dane wejściowe: Dystans={features['min_odleglosc_pix']} | Tunel={features['czy_w_tunelu_pod_obrecza']} | Siatka={features["net_moved"]}")
+
+
+            # RESET po rzucie
+            trajectory_points = []
+            ball_center_points_in_rim = []
+            ball_center_points_after_rim = []
+            net_moved_in_frames = []
+            net_detection_started = False
+            wait_net_start = False
+            ball_in_rim_prev = False
+            shot_net_moved = False
+
+            # cooldown
+            shot_cooldown = COOLDOWN_DURATION
+            shotState = "COOLDOWN"
     elif shotState == "WAIT_NET":
+        if wait_net_start and last_point is not None:
+            ball_center_points_after_rim.append(last_point)
+            
         # i to jest teraz stan do detekcji siatki, bugfixuje to ze wczesniej gdy pilka wypadala z roi to od razu byl cooldown i nie bylo czasu zeby sprawdzic czy sie siatka ruszyla
         if wait_net_start and last_ball_xyxy is not None and detected_rim_box is not None:
             # obliczamy czy pilka jest ponizej kosza, jezeli tak zaczynamy detekcje
-            
             bx1, by1, bx2, by2 = last_ball_xyxy
             ball_center_y = (by1 + by2) * 0.5
 
@@ -221,9 +258,9 @@ while cap.isOpened():
             # to jest juz etap po rzucie wiec teraz jest predykcja
 
             total_shots += 1
-            print(f"Rzut nr {total_shots} zakończony. Analiza...")
+            print(f"Rzut nr {total_shots} zakończony (bez siatki i tunelu). Analiza...")
             
-            features = feature_extraction(trajectory_points, detected_rim_box, fps)
+            features = feature_extraction(trajectory_points, detected_rim_box, fps, ball_center_points_after_rim)
             features["net_moved"] = shot_net_moved
             
             features_df = pd.DataFrame([features])
