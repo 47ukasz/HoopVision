@@ -1,0 +1,44 @@
+DECISSION TREE
+Dokładność (accuracy): 0.8032786885245902
+Macierz pomyłek:
+[[19  6]
+ [ 6 30]]
+Raport klasyfikacji:
+              precision    recall  f1-score   support
+
+         hit       0.76      0.76      0.76        25
+        miss       0.83      0.83      0.83        36
+
+    accuracy                           0.80        61
+   macro avg       0.80      0.80      0.80        61
+weighted avg       0.80      0.80      0.80        61
+
+LINEAR REGRESION
+Dokładność (accuracy): 0.819672131147541
+Macierz pomyłek:
+[[18  7]
+ [ 4 32]]
+Raport klasyfikacji:
+              precision    recall  f1-score   support
+
+         hit       0.82      0.72      0.77        25
+        miss       0.82      0.89      0.85        36
+
+    accuracy                           0.82        61
+   macro avg       0.82      0.80      0.81        61
+weighted avg       0.82      0.82      0.82        61
+
+KNN
+Dokładność (accuracy): 0.7868852459016393
+Macierz pomyłek:
+[[17  8]
+ [ 5 31]]
+Raport klasyfikacji:
+              precision    recall  f1-score   support
+
+         hit       0.77      0.68      0.72        25
+        miss       0.79      0.86      0.83        36
+
+    accuracy                           0.79        61
+   macro avg       0.78      0.77      0.78        61
+weighted avg       0.79      0.79      0.78        61
