@@ -47,20 +47,20 @@ def analyze_video(video_path):
         frame_count += 1
         boxes = model(frame)[0].boxes
 
-        ballSelected = False
-        rimSelected = False
+        ball_selected = False
+        rim_selected = False
 
         for box in boxes:
             box_class_index = int(box.cls[0])
             box_conf_level = float(box.conf[0])
 
-            if box_class_index == BASKETBALL_CLASS_INDEX and box_conf_level >= MIN_BALL_CONF and not ballSelected:
+            if box_class_index == BASKETBALL_CLASS_INDEX and box_conf_level >= MIN_BALL_CONF and not ball_selected:
                 point = handle_detect_trajectory_point(frame_count, box)
-                ballSelected = True
+                ball_selected = True
 
-            if box_class_index == RIM_CLASS_INDEX and box_conf_level >= MIN_RIM_CONF and not rimSelected:
+            if box_class_index == RIM_CLASS_INDEX and box_conf_level >= MIN_RIM_CONF and not rim_selected:
                 detected_rim_box = handle_detetect_rim(frame, box)
-                rimSelected = True
+                rim_selected = True
 
         net_attr = None
             

@@ -1,3 +1,4 @@
 data/
+analysis_results/
 predictions/
 __pycache__/
