@@ -11,12 +11,13 @@ from sklearn.tree import DecisionTreeClassifier
 from sklearn.linear_model import LogisticRegression
 
 project_dir = Path.cwd()
-csv_dir = project_dir / "data/trajectory_features_2.csv"
+csv_dir = project_dir / "data/trajectory_features_finall.csv"
 
 df = pd.read_csv(csv_dir)
 
-##feature_cols = ["min_odleglosc_pix", "predkosc", "kat", "czy_w_tunelu_pod_obrecza", "net_moved"]
-feature_cols = ["min_odleglosc_pix", "czy_w_tunelu_pod_obrecza", "net_moved"]
+#feature_cols = ["min_odleglosc_pix", "predkosc", "kat", "czy_w_tunelu_pod_obrecza", "net_moved"]
+##feature_cols = ["min_odleglosc_pix", "czy_w_tunelu_pod_obrecza", "net_moved"]
+feature_cols = ["min_odleglosc_pix", "kat", "czy_w_tunelu_pod_obrecza", "net_moved"]
 
 X = df[feature_cols]
 y = df["label"]
@@ -67,7 +68,7 @@ def train_dt():
 
     joblib.dump(dt_pipeline, "dt_model.pkl")
     
-def train_lt():
+def train_lr():
     lt_pipeline = Pipeline([
         ("tl", LogisticRegression(random_state=42))
     ])
@@ -82,6 +83,6 @@ def train_lt():
     print("Raport klasyfikacji:")
     print(classification_report(y_test, y_pred))
 
-    joblib.dump(lt_pipeline, "lt_model.pkl")
+    joblib.dump(lt_pipeline, "lr_model.pkl")
     
-train_dt()
+train_lr()

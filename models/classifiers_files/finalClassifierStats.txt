@@ -1,0 +1,16 @@
+feature_cols = ["min_odleglosc_pix", "kat", "czy_w_tunelu_pod_obrecza", "net_moved"]
+
+LINEAR REGRESION
+Dokładność (accuracy): 0.8032786885245902
+Macierz pomyłek:
+[[18  7]
+ [ 5 31]]
+Raport klasyfikacji:
+              precision    recall  f1-score   support
+
+         hit       0.78      0.72      0.75        25
+        miss       0.82      0.86      0.84        36
+
+    accuracy                           0.80        61
+   macro avg       0.80      0.79      0.79        61
+weighted avg       0.80      0.80      0.80        61

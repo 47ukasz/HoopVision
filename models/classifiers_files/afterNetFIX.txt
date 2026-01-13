@@ -1,0 +1,140 @@
+feature_cols = ["min_odleglosc_pix", "czy_w_tunelu_pod_obrecza", "net_moved"]
+
+DECISION TREE
+Dokładność (accuracy): 0.6721311475409836
+Macierz pomyłek:
+[[19  6]
+ [14 22]]
+Raport klasyfikacji:
+              precision    recall  f1-score   support
+
+         hit       0.58      0.76      0.66        25
+        miss       0.79      0.61      0.69        36
+
+    accuracy                           0.67        61
+   macro avg       0.68      0.69      0.67        61
+weighted avg       0.70      0.67      0.67        61
+
+KNN
+Dokładność (accuracy): 0.7377049180327869
+Macierz pomyłek:
+[[18  7]
+ [ 9 27]]
+Raport klasyfikacji:
+              precision    recall  f1-score   support
+
+         hit       0.67      0.72      0.69        25
+        miss       0.79      0.75      0.77        36
+
+    accuracy                           0.74        61
+   macro avg       0.73      0.73      0.73        61
+weighted avg       0.74      0.74      0.74        61
+
+LINEAR REGRESION
+Dokładność (accuracy): 0.7540983606557377
+Macierz pomyłek:
+[[17  8]
+ [ 7 29]]
+Raport klasyfikacji:
+              precision    recall  f1-score   support
+
+         hit       0.71      0.68      0.69        25
+        miss       0.78      0.81      0.79        36
+
+    accuracy                           0.75        61
+   macro avg       0.75      0.74      0.74        61
+weighted avg       0.75      0.75      0.75        61
+
+feature_cols = ["min_odleglosc_pix", "predkosc", "kat", "czy_w_tunelu_pod_obrecza", "net_moved"]
+
+DECISON TREE
+Dokładność (accuracy): 0.6557377049180327
+Macierz pomyłek:
+[[18  7]
+ [14 22]]
+Raport klasyfikacji:
+              precision    recall  f1-score   support
+
+         hit       0.56      0.72      0.63        25
+        miss       0.76      0.61      0.68        36
+
+    accuracy                           0.66        61
+   macro avg       0.66      0.67      0.65        61
+weighted avg       0.68      0.66      0.66        61
+
+KNN
+Dokładność (accuracy): 0.6885245901639344
+Macierz pomyłek:
+[[15 10]
+ [ 9 27]]
+Raport klasyfikacji:
+              precision    recall  f1-score   support
+
+         hit       0.62      0.60      0.61        25
+        miss       0.73      0.75      0.74        36
+
+    accuracy                           0.69        61
+   macro avg       0.68      0.68      0.68        61
+weighted avg       0.69      0.69      0.69        61
+
+LINEAR REGRESION
+Dokładność (accuracy): 0.8032786885245902
+Macierz pomyłek:
+[[18  7]
+ [ 5 31]]
+Raport klasyfikacji:
+              precision    recall  f1-score   support
+
+         hit       0.78      0.72      0.75        25
+        miss       0.82      0.86      0.84        36
+
+    accuracy                           0.80        61
+   macro avg       0.80      0.79      0.79        61
+weighted avg       0.80      0.80      0.80        61
+
+feature_cols = ["min_odleglosc_pix", "kat", "czy_w_tunelu_pod_obrecza", "net_moved"]
+
+DECISION TREE
+Dokładność (accuracy): 0.6721311475409836
+Macierz pomyłek:
+[[20  5]
+ [15 21]]
+Raport klasyfikacji:
+              precision    recall  f1-score   support
+
+         hit       0.57      0.80      0.67        25
+        miss       0.81      0.58      0.68        36
+
+    accuracy                           0.67        61
+   macro avg       0.69      0.69      0.67        61
+weighted avg       0.71      0.67      0.67        61
+
+KNN
+Dokładność (accuracy): 0.7049180327868853
+Macierz pomyłek:
+[[16  9]
+ [ 9 27]]
+Raport klasyfikacji:
+              precision    recall  f1-score   support
+
+         hit       0.64      0.64      0.64        25
+        miss       0.75      0.75      0.75        36
+
+    accuracy                           0.70        61
+   macro avg       0.70      0.70      0.70        61
+weighted avg       0.70      0.70      0.70        61
+
+LINEAR REGRESION
+Dokładność (accuracy): 0.8032786885245902
+Macierz pomyłek:
+[[18  7]
+ [ 5 31]]
+Raport klasyfikacji:
+              precision    recall  f1-score   support
+
+         hit       0.78      0.72      0.75        25
+        miss       0.82      0.86      0.84        36
+
+    accuracy                           0.80        61
+   macro avg       0.80      0.79      0.79        61
+weighted avg       0.80      0.80      0.80        61

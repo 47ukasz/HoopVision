@@ -15,7 +15,7 @@ model_path = project_dir / "models/hoopvision_v7/weights/best.pt"
 lr_model_path = project_dir / "models/lr_model.pkl"
 # video_path = project_dir / "data/collection/trafione/scored1.mp4"
 # video_path = project_dir / "data/collection/odbite_od_tablicy/backhit27.mp4"
-video_path = project_dir / "data/collection/nietrafione/missed2.mp4"
+video_path = project_dir / "data/collection/videos/long/video12.mp4"
 # video_path = project_dir / "data/collection/videos/test/video9.mp4"
 output_path = project_dir / "analysis_results" / f"{video_path.stem}_analyzed.mp4"
 
@@ -192,7 +192,7 @@ while cap.isOpened():
             features["net_moved"] = False
 
             features_df = pd.DataFrame([features])
-            model_input = features_df[["min_odleglosc_pix", "czy_w_tunelu_pod_obrecza"]]
+            model_input = features_df[["min_odleglosc_pix", "kat", "czy_w_tunelu_pod_obrecza", "net_moved"]]
             prediction = lr_model.predict(model_input)[0]
 
             if prediction == 'hit':
@@ -201,7 +201,7 @@ while cap.isOpened():
                 result_text = "PUDŁO"
 
             print(f"Wynik LR: {result_text}")
-            print(f"Dane wejściowe: Dystans={features['min_odleglosc_pix']} | Tunel={features['czy_w_tunelu_pod_obrecza']} | Siatka={features["net_moved"]}")
+            print(f"Dane wejściowe: Dystans={features['min_odleglosc_pix']} | Tunel={features['czy_w_tunelu_pod_obrecza']} | Siatka={features['net_moved']}")
 
 
             # RESET po rzucie
@@ -264,7 +264,7 @@ while cap.isOpened():
             features["net_moved"] = shot_net_moved
             
             features_df = pd.DataFrame([features])
-            model_input = features_df[["min_odleglosc_pix", "czy_w_tunelu_pod_obrecza"]]
+            model_input = features_df[["min_odleglosc_pix", "kat", "czy_w_tunelu_pod_obrecza", "net_moved"]]
             prediction = lr_model.predict(model_input)[0]
 
             if prediction == 'hit':
@@ -273,7 +273,7 @@ while cap.isOpened():
                 result_text = "PUDŁO"
 
             print(f"Wynik LR: {result_text}")
-            print(f"Dane wejściowe: Dystans={features['min_odleglosc_pix']} | Tunel={features['czy_w_tunelu_pod_obrecza']} | Siatka={features["net_moved"]}")
+            print(f"Dane wejściowe: Dystans={features['min_odleglosc_pix']} | Tunel={features['czy_w_tunelu_pod_obrecza']} | Siatka={features['net_moved']}")
 
             # RESET
 
