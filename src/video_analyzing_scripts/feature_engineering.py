@@ -1,6 +1,6 @@
 import numpy as np
 
-def feature_extraction(trajectory, rim_box, fps):
+def feature_extraction(trajectory, rim_box, fps, ball_center_points_after_rim):
     """
     Oblicza statystyki rzutu na podstawie zebranych danych.
     trajectory: lista [(frame_idx, x, y), ...]
@@ -22,16 +22,20 @@ def feature_extraction(trajectory, rim_box, fps):
     #najmnijesza odleglosc pilki od srodka obreczy 
     dists = np.linalg.norm(points - rim_center, axis = 1)
     min_dist_idx = np.argmin(dists)
-    min_dist = dists[min_dist_idx]
-    
-    #czas aby pilka opadla poniezj punktu srodka obreczy
-    time_offset = 0.25
-    look_ahead_frames = int(fps * time_offset) #przeliczamy na klatki
-    check_idx = min(len(points) - 1, min_dist_idx + look_ahead_frames) #ustalamy index wspolrzednych pilki po offsetcie
+    min_dist = dists[min_dist_idx] 
 
-    #wspolrzedne pilki po pokonania srodka obreczy
-    after_min_dist_points = points[check_idx]
-    after_x, after_y = after_min_dist_points
+    after_x = None
+    after_y = None
+
+    if ball_center_points_after_rim and len(ball_center_points_after_rim) > 0:
+        offset_frames = max(0, int(.1 * fps))
+        idx = min(len(ball_center_points_after_rim) - 1, offset_frames)
+
+        after_x = float(ball_center_points_after_rim[idx][1])
+        after_y = float(ball_center_points_after_rim[idx][2])
+    else:
+        after_x = float(points[-1][0])
+        after_y = float(points[-1][1])
     
     #warunek wysokosci(musi byc pod obrecza)
     is_below_rim = after_y > r_ymax
