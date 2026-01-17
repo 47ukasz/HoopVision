@@ -1,6 +1,6 @@
 import cv2 as cv
 import numpy as np
-from constants import RIM_CLASS_INDEX, MIN_RIM_CONF
+from ..constants import RIM_CLASS_INDEX, MIN_RIM_CONF
 
 def handle_detect_rim(rim_candidates):
     if not rim_candidates:

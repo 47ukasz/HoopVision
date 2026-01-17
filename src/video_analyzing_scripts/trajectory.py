@@ -1,7 +1,7 @@
 import cv2 as cv
 import numpy as np
 
-from constants import BASKETBALL_CLASS_INDEX, MIN_BALL_CONF
+from ..constants import BASKETBALL_CLASS_INDEX, MIN_BALL_CONF
 
 def handle_detect_trajectory_point(currentFrameId, box):
     xyxy = box.xyxy[0].cpu().numpy()
