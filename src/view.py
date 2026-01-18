@@ -1,6 +1,5 @@
 from pathlib import Path
 
-from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QPixmap
 from PyQt6.QtCore import Qt, QTimer
 import time
@@ -152,14 +151,9 @@ class MainWindow(QMainWindow):
         QMessageBox.critical(self, "Błąd", msg)
 
     def on_finished(self):
-        """
-        Sprząta po zakończeniu wątku. Nie otwiera okna statystyk,
-        bo robi to on_stats_finished z poprawnymi danymi.
-        """
         self.worker = None
         self.timer.stop()
 
-        # Odblokowanie UI
         self.btn_start.setEnabled(True)
         self.btn_stop.setEnabled(False)
         self.rb_file.setEnabled(True)

@@ -1,5 +1,3 @@
-# stats_window.py
-
 from PyQt6.QtWidgets import (
     QWidget, QListWidget, QLabel, QVBoxLayout, QHBoxLayout,
     QPushButton, QFileDialog, QMessageBox, QGroupBox
@@ -15,12 +13,10 @@ class StatsWindow(QWidget):
 
         self.shots_data = shots_data
 
-        # --- Obliczenia ogólne ---
         total_shots = len(self.shots_data)
         hits = sum(1 for s in self.shots_data if s['result'] == 'hit')
         accuracy = (hits / total_shots * 100) if total_shots > 0 else 0
 
-        # --- Lewa strona: Lista rzutów ---
         self.list_widget = QListWidget()
         for shot in shots_data:
             res = "Trafione" if shot["result"] == "hit" else "Pudło"
@@ -28,17 +24,14 @@ class StatsWindow(QWidget):
 
         self.list_widget.currentRowChanged.connect(self.show_details)
 
-        # --- Prawa strona: Szczegóły wybranego rzutu ---
         self.details = QLabel("Wybierz rzut z listy, aby zobaczyć szczegóły.")
         self.details.setAlignment(Qt.AlignmentFlag.AlignTop)
         self.details.setStyleSheet("font-size:14px; padding: 10px;")
         self.details.setWordWrap(True)
 
-        # --- Prawy dół: Panel ogólnych statystyk (Standardowy styl Qt) ---
         self.summary_group = QGroupBox("Podsumowanie filmu")
         summary_layout = QVBoxLayout()
 
-        # Dodano czas trwania do tekstu statystyk
         stats_text = (
             f"Czas trwania: {duration}\n"
             f"Łącznie rzutów: {total_shots}\n"
@@ -51,12 +44,10 @@ class StatsWindow(QWidget):
         summary_layout.addWidget(self.lbl_overall)
         self.summary_group.setLayout(summary_layout)
 
-        # --- Przycisk zapisu ---
         self.btn_save = QPushButton("Zapisz do pliku")
         self.btn_save.setMinimumHeight(40)
         self.btn_save.clicked.connect(self.save_data)
 
-        # --- Konstrukcja Layoutu ---
         right_column = QVBoxLayout()
         right_column.addWidget(self.details, 1)
         right_column.addWidget(self.summary_group)
@@ -79,7 +70,6 @@ class StatsWindow(QWidget):
 
     def _format_shot_text(self, s: dict) -> str:
         res_str = "TRAFIONY!" if s['result'] == 'hit' else "PUDŁO"
-        # Formatowanie szczegółów pojedynczego rzutu
         text = f"""Rzut nr: {s['shot_id']}
 ━━━━━━━━━━━━━━━━━━
 Wynik: {res_str}
