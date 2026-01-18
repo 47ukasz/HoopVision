@@ -6,7 +6,7 @@ import cv2 as cv
 from PyQt6.QtCore import QThread, pyqtSignal
 from PyQt6.QtGui import QImage
 
-from .main import analyze  
+from main import analyze  
 
 
 @dataclass

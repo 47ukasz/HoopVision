@@ -4,11 +4,11 @@ import joblib
 import cv2 as cv
 from ultralytics import YOLO
 
-from .video_analyzing_scripts.feature_engineering import feature_extraction
-from .video_analyzing_scripts.rim import handle_detect_net_moved, handle_draw_rim, handle_detect_rim, handle_calculate_ball_in_rim
-from .video_analyzing_scripts.trajectory import handle_detect_trajectory_point, handle_draw_trajectory, handle_draw_ball
-from .video_analyzing_scripts.throw_roi import create_tracking_roi, is_ball_in_roi
-from .constants import RIM_CLASS_INDEX, MIN_RIM_CONF, BASKETBALL_CLASS_INDEX, MIN_BALL_CONF
+from video_analyzing_scripts.feature_engineering import feature_extraction
+from video_analyzing_scripts.rim import handle_detect_net_moved, handle_draw_rim, handle_detect_rim, handle_calculate_ball_in_rim
+from video_analyzing_scripts.trajectory import handle_detect_trajectory_point, handle_draw_trajectory, handle_draw_ball
+from video_analyzing_scripts.throw_roi import create_tracking_roi, is_ball_in_roi
+from constants import RIM_CLASS_INDEX, MIN_RIM_CONF, BASKETBALL_CLASS_INDEX, MIN_BALL_CONF
 
 def analyze(
     source,
@@ -19,7 +19,8 @@ def analyze(
 ):
 
     project_dir = Path.cwd()
-    model_path = project_dir / "models/hoopvision_v7/weights/best.pt"
+    print(project_dir)
+    model_path = project_dir / "models/hoopvision_v6/weights/best.pt"
     lr_model_path = project_dir / "models/lr_model.pkl"
     #video_path = project_dir / "data/collection/videos/trafione/scored1.mp4"
     # video_path = project_dir / "data/collection/odbite_od_tablicy/backhit27.mp4"
@@ -91,6 +92,9 @@ def analyze(
     detected_rim_box = None #[xmin, ymin, xmax, ymax]
     detected_rim_yolo_box = None # wykryty bb kosza 
     rim_locked = False
+
+    # zmienne do naprawy gdy piłka wyjdzie poza kadr
+    ball_missing_frames = 0
 
     while cap.isOpened():
 
@@ -217,6 +221,24 @@ def analyze(
                 print(f"Rzut nr {total_shots} zakończony. Analiza...")
 
                 features = feature_extraction(trajectory_points, detected_rim_box, fps, ball_center_points_after_rim=[])
+
+                if features is None:
+                    print("Błąd ekstrakcji danych.")
+                    trajectory_points = []
+                    ball_center_points_in_rim = []
+                    ball_center_points_after_rim = []
+                    net_moved_in_frames = []
+                    net_detection_started = False
+                    wait_net_start = False
+                    ball_in_rim_prev = False
+                    shot_net_moved = False
+
+                    shot_cooldown = COOLDOWN_DURATION
+                    shotState = "COOLDOWN"
+                    # skip tej klatki 
+                    prev_frame = clean_frame.copy()
+                    continue
+
                 features["net_moved"] = False
 
                 features_df = pd.DataFrame([features])
@@ -234,7 +256,6 @@ def analyze(
 
                 print(f"Wynik LR: {result_text}")
                 print(f"Dane wejściowe: Dystans={features['min_odleglosc_pix']} | Tunel={features['czy_w_tunelu_pod_obrecza']} | Siatka={features['net_moved']}")
-
 
                 # RESET po rzucie
                 trajectory_points = []
@@ -293,6 +314,24 @@ def analyze(
                 print(f"Rzut nr {total_shots} zakończony (bez siatki i tunelu). Analiza...")
                 
                 features = feature_extraction(trajectory_points, detected_rim_box, fps, ball_center_points_after_rim)
+
+                if features is None:
+                    print("Błąd ekstrakcji danych.")
+                    trajectory_points = []
+                    ball_center_points_in_rim = []
+                    ball_center_points_after_rim = []
+                    net_moved_in_frames = []
+                    net_detection_started = False
+                    wait_net_start = False
+                    ball_in_rim_prev = False
+                    shot_net_moved = False
+
+                    shot_cooldown = COOLDOWN_DURATION
+                    shotState = "COOLDOWN"
+                    # skip tej klatki 
+                    prev_frame = clean_frame.copy()
+                    continue
+
                 features["net_moved"] = shot_net_moved
                 
                 features_df = pd.DataFrame([features])

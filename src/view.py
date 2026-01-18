@@ -9,7 +9,7 @@ from PyQt6.QtWidgets import (
     QFileDialog, QComboBox, QHBoxLayout, QVBoxLayout, QMessageBox
 )
 
-from .worker import AnalyzerWorker
+from worker import AnalyzerWorker
 
 
 class MainWindow(QMainWindow):
