@@ -18,11 +18,13 @@ class AnalyzerWorker(QThread):
     frame_ready = pyqtSignal(QImage)
     error = pyqtSignal(str)
     stats_ready = pyqtSignal(int, int)  # total_shots, hit_shots
+    finished_with_data = pyqtSignal(list)
 
     def __init__(self, source):
         super().__init__()
         self.source = source  # Path/str albo int
         self.stop_flag = StopFlag(False)
+        self.shots_data = []
 
     def request_stop(self):
         self.stop_flag.stop = True
@@ -37,7 +39,8 @@ class AnalyzerWorker(QThread):
             def on_frame(frame_bgr):
                 self.frame_ready.emit(self._to_qimage(frame_bgr))
 
-            def on_stats(total, hits):
+            def on_stats(total, hits, shot_data):
+                self.shots_data.append(shot_data)
                 self.stats_ready.emit(total, hits)
 
             analyze(
@@ -46,5 +49,8 @@ class AnalyzerWorker(QThread):
                 stats_callback=on_stats,
                 stop_flag=self.stop_flag,
             )
+
+            self.finished_with_data.emit(self.shots_data)
+
         except Exception as e:
             self.error.emit(str(e))

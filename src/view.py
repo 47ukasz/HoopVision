@@ -10,7 +10,7 @@ from PyQt6.QtWidgets import (
 )
 
 from worker import AnalyzerWorker
-
+from stats_window import StatsWindow
 
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -54,6 +54,10 @@ class MainWindow(QMainWindow):
         self.btn_start = QPushButton("Start")
         self.btn_stop = QPushButton("Stop")
         self.btn_stop.setEnabled(False)
+
+        self.last_total = 0
+        self.last_hits = 0
+        self.stats_window = None
 
         # layout
         top = QVBoxLayout()
@@ -121,6 +125,7 @@ class MainWindow(QMainWindow):
         self.worker.error.connect(self.on_error)
         self.worker.finished.connect(self.on_finished)
         self.worker.stats_ready.connect(self.on_stats)
+        self.worker.finished_with_data.connect(self.on_stats_finished)
 
         self.btn_start.setEnabled(False)
         self.btn_stop.setEnabled(True)
@@ -147,17 +152,33 @@ class MainWindow(QMainWindow):
         QMessageBox.critical(self, "Błąd", msg)
 
     def on_finished(self):
+        """
+        Sprząta po zakończeniu wątku. Nie otwiera okna statystyk,
+        bo robi to on_stats_finished z poprawnymi danymi.
+        """
         self.worker = None
+        self.timer.stop()
+
+        # Odblokowanie UI
         self.btn_start.setEnabled(True)
         self.btn_stop.setEnabled(False)
         self.rb_file.setEnabled(True)
         self.rb_cam.setEnabled(True)
         self.update_source_ui()
-        self.timer.stop()
 
     def on_stats(self, total: int, hits: int):
         self.lbl_total.setText(f"Rzuty: {total}")
         self.lbl_hits.setText(f"Trafione: {hits}")
+        self.last_total = total
+        self.last_hits = hits
+
+    def on_stats_finished(self, shots_data: list):
+        duration_str = self.lbl_time.text().replace("Czas: ", "")
+        QTimer.singleShot(0, lambda: self._show_stats_window(shots_data, duration_str))
+
+    def _show_stats_window(self, shots_data, duration_str):
+        self.stats_window = StatsWindow(shots_data, duration_str)
+        self.stats_window.show()
 
     def update_time(self):
         if self.start_ts is None:

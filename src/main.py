@@ -251,8 +251,20 @@ def analyze(
                 else:
                     result_text = "PUDŁO"
 
+                shot_data = {
+                    "shot_id": total_shots,
+                    "result": prediction,
+                    "min_distance_px": features["min_odleglosc_pix"],
+                    "angle_deg": features["kat"],
+                    "tunnel": features["czy_w_tunelu_pod_obrecza"],
+                    "net_moved": shot_net_moved,
+                    "net_moves_detected": None,
+                    "net_moves_required": None,
+                }
+
                 if stats_callback is not None:
-                    stats_callback(total_shots, hit_shots)
+                    stats_callback(total_shots, hit_shots, shot_data)
+
 
                 print(f"Wynik LR: {result_text}")
                 print(f"Dane wejściowe: Dystans={features['min_odleglosc_pix']} | Tunel={features['czy_w_tunelu_pod_obrecza']} | Siatka={features['net_moved']}")
@@ -344,8 +356,20 @@ def analyze(
                 else:
                     result_text = "PUDŁO"
 
+                shot_data = {
+                    "shot_id": total_shots,
+                    "result": prediction,
+                    "min_distance_px": features["min_odleglosc_pix"],
+                    "angle_deg": features["kat"],
+                    "tunnel": features["czy_w_tunelu_pod_obrecza"],
+                    "net_moved": shot_net_moved,
+                    "net_moves_detected": None,
+                    "net_moves_required": None,
+                }
+
                 if stats_callback is not None:
-                    stats_callback(total_shots, hit_shots)
+                    stats_callback(total_shots, hit_shots, shot_data)
+
 
                 print(f"Wynik LR: {result_text}")
                 print(f"Dane wejściowe: Dystans={features['min_odleglosc_pix']} | Tunel={features['czy_w_tunelu_pod_obrecza']} | Siatka={features['net_moved']}")
