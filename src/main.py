@@ -118,7 +118,7 @@ def analyze(
         #cv.putText(frame, f"STATE: {shotState}", (20, 95), cv.FONT_HERSHEY_SIMPLEX, 0.75, (0, 255, 255), 2)
         
         # detekcja
-        results = model(frame, verbose=False, imgsz=640)
+        results = model(frame, verbose=False, imgsz=640, device='mps')
         boxes = results[0].boxes
 
         net_attr = None
