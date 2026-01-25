@@ -20,7 +20,7 @@ def analyze(
 
     project_dir = Path.cwd()
     print(project_dir)
-    model_path = project_dir / "models/hoopvision_v6/weights/best.pt"
+    model_path = project_dir / "models/hoopvision_v7/weights/best.pt"
     lr_model_path = project_dir / "models/lr_model.pkl"
     #video_path = project_dir / "data/collection/videos/trafione/scored1.mp4"
     # video_path = project_dir / "data/collection/odbite_od_tablicy/backhit27.mp4"
@@ -397,9 +397,9 @@ def analyze(
 
         out.write(frame)
         if frame_callback is not None:
-            frame_callback(clean_frame)
+            frame_callback(frame)
         else:
-            cv.imshow("Analiza rzutu", clean_frame)
+            cv.imshow("Analiza rzutu", frame)
             if cv.waitKey(1) == ord('q'):
                 break
         
